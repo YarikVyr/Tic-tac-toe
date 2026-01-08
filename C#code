@@ -1,0 +1,81 @@
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace KresLiki
+{
+    internal class Program
+    {
+        static char[] board = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        static int player = 1;
+
+        static void DrawBoard()
+        {
+            Console.WriteLine($" {board[1]} | {board[2]} | {board[3]} ");
+            Console.WriteLine("---+---+---");
+            Console.WriteLine($" {board[4]} | {board[5]} | {board[6]} ");
+            Console.WriteLine("---+---+---");
+            Console.WriteLine($" {board[7]} | {board[8]} | {board[9]} ");
+        }
+
+        static bool Victory()
+        {
+            return
+                (board[1] == board[2] && board[2] == board[3]) ||
+                (board[4] == board[5] && board[5] == board[6]) ||
+                (board[7] == board[8] && board[8] == board[9]) ||
+                (board[1] == board[4] && board[4] == board[7]) ||
+                (board[2] == board[5] && board[5] == board[8]) ||
+                (board[3] == board[6] && board[6] == board[9]) ||
+                (board[1] == board[5] && board[5] == board[9]) ||
+                (board[3] == board[5] && board[5] == board[7]);
+        }
+
+        static bool IsDraw()
+        {
+            return board.All(cell => cell == 'X' || cell == 'O' || cell == '0');
+        }
+
+        static void Main(string[] args)
+        {
+            int choice;
+            bool inputValid;
+
+            do
+            {
+                Console.Clear();
+                DrawBoard();
+                Console.WriteLine($"\nХод (игрок {player}), введите номер ячейки");
+
+                inputValid = int.TryParse(Console.ReadLine(), out choice) && choice >= 1 && choice <= 9 && board[choice] != 'X' && board[choice] != 'O';
+
+                if (!inputValid)
+                {
+                    Console.WriteLine("Некорректный ввод!");
+                    continue;
+                }
+
+                board[choice] = (player == 1) ? 'X' : 'O';
+
+                if (Victory())
+                {
+                    Console.Clear();
+                    DrawBoard();
+                    Console.WriteLine($"\nИгрок {player} победил!");
+                    break;
+                }
+
+                if (IsDraw())
+                {
+                    Console.Clear();
+                    DrawBoard();
+                    Console.WriteLine("\nНичья!");
+                    break;
+                }
+
+                player = (player == 1) ? 2 : 1;
+            } while (true);
+        }
+    }
+}
